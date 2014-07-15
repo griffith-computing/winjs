@@ -7,28 +7,8 @@
     var reportingStatus = false;
     var browsers = [{
         browserName: "internet explorer",
-        platform: "WIN8.1",
-        version: "11"
-    },{
-        browserName: "internet explorer",
-        platform: "WIN8",
-        version: "10"
-    }, {
-        browserName: "safari",
-        platform: "OS X 10.9",
-        version: "7"
-    }, {
-        browserName: "firefox",
-        platform: "Win8.1",
-        version: "28"
-    }, {
-        browserName: "googlechrome",
-        platform: "Win8.1",
-        version: "34"
-    }, {
-        browserName: "iPhone",
-        platform: "OS X 10.9",
-        version: "7.1"
+        platform: "WIN7",
+        version: "9"
     }];
 
     function getBrowserIndex(browser) {
