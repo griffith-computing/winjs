@@ -1,7 +1,5 @@
 {
      "all": [ 
-          
-          
           "http://127.0.0.1:9999/bin/tests/Base/test.html?fastanimations=true&autostart=true",
           "http://127.0.0.1:9999/bin/tests/Binding/test.html?fastanimations=true&autostart=true",
           "http://127.0.0.1:9999/bin/tests/BindingList/test.html?fastanimations=true&autostart=true",
@@ -12,7 +10,7 @@
           "http://127.0.0.1:9999/bin/tests/Promise/test.html?fastanimations=true&autostart=true",
           "http://127.0.0.1:9999/bin/tests/Repeater/test.html?fastanimations=true&autostart=true",
           "http://127.0.0.1:9999/bin/tests/Scheduler/test.html?fastanimations=true&autostart=true",
-          "http://127.0.0.1:9999/bin/tests/WWA-Application/test.html?fastanimations=true&autostart=true",
+          "http://127.0.0.1:9999/bin/tests/WWA-Application/test.html?fastanimations=true&autostart=true"
      ],
      "ie11only": [
      ]
