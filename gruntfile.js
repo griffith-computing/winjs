@@ -5,10 +5,8 @@
     module.exports = function (grunt) {
         var config = require("./config.js");
         config.grunt = grunt;
-
-        // Make sure that Grunt doesn't remove BOM from our utf8 files
-        // on read
-        grunt.file.preserveBOM = true;
+        
+        grunt.file.preserveBOM = false;
 
         // Helper function to load the config file
         function loadConfig(path) {
