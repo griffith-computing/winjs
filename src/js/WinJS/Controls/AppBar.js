@@ -949,7 +949,7 @@ define([
 
                     // If the current active element isn't an intrinsic part of the AppBar, 
                     // Layout might want to handle additional keys. 
-                    if (!document.activeElement.contains(this._invokeButton)) {                        
+                    if (!this._invokeButton.contains(event.target)) {
                         this._layout.handleKeyDown(event);
                     }
                 },
