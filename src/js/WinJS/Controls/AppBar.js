@@ -951,8 +951,11 @@ define([
                         _Overlay._Overlay._hideLightDismissAppBars(null, true);
                     }
 
-                    // Layout might want to handle additional keys
-                    this._layout.handleKeyDown(event);
+                    // If the current active element isn't an intrinsic part of the AppBar, 
+                    // Layout might want to handle additional keys. 
+                    if (!document.activeElement.contains(this._invokeButton)) {                        
+                        this._layout.handleKeyDown(event);
+                    }
                 },
 
                 _visiblePixels: {
