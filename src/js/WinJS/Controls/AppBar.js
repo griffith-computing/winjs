@@ -175,12 +175,14 @@ define([
             // Sets focus to the last AppBar in the provided appBars array with given placement.
             // Returns true if focus was set.  False otherwise.
             function _setFocusToPreviousAppBarHelper(startIndex, appBarPlacement, appBars) {
+                var appBar;
                 for (var i = startIndex; i >= 0; i--) {
-                    if (appBars[i].winControl
-                     && appBars[i].winControl.placement === appBarPlacement
-                     && !appBars[i].winControl.hidden
-                     && appBars[i].winControl._focusOnLastFocusableElement
-                     && appBars[i].winControl._focusOnLastFocusableElement()) {
+                    appBar = appBars[i].winControl;
+                    if (appBar
+                     && appBar.placement === appBarPlacement
+                     && !appBar.hidden
+                     && appBar._focusOnLastFocusableElement
+                     && appBar._focusOnLastFocusableElement()) {
                         return true;
                     }
                 }
@@ -229,7 +231,7 @@ define([
                     appBar = appBars[i].winControl;
                     if (appBar
                      && appBar.placement === appBarPlacement
-                     && appBar.hidden
+                     && !appBar.hidden
                      && appBar._focusOnFirstFocusableElement
                      && appBar._focusOnFirstFocusableElement()) {
                         return true;
