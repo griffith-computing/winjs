@@ -197,7 +197,7 @@ CorsicaTests.AppBarTests = function () {
         LiveUnit.Assert.isFalse(AppBar.sticky, "Verifying that sticky is false");
         LiveUnit.Assert.isFalse(AppBar.disabled, "Verifying that disabled is false");
         LiveUnit.Assert.isTrue(AppBar.hidden, "Verifying that hidden is true");
-        LiveUnit.Assert.areEqual(AppBar.closedDisplayMode, 'none', "Verifying closedDisplayMode is none");
+        LiveUnit.Assert.areEqual(AppBar.closedDisplayMode, 'minimal', "Verifying closedDisplayMode is minimal");
     }
     this.testDefaultAppBarParameters["Description"] = "Test default AppBar parameters";
 
@@ -815,7 +815,7 @@ CorsicaTests.AppBarTests = function () {
     };
 
     this.testCommandsLayoutCleansUpAfterItself = function (complete) {
-        // Verify that switching away from commands layout will remove the commandlayout class 
+        // Verify that switching away from commands layout will remove the commandlayout class, the win-reduced class,
         // and any commands layout specific HTML from the AppBar element.
         var root = document.getElementById("appBarDiv");
         root.innerHTML =
@@ -826,12 +826,16 @@ CorsicaTests.AppBarTests = function () {
         var appBar = new WinJS.UI.AppBar(root.querySelector("#appBar"), { layout: 'commands' });
 
         // Make sure we start from a sane place and verify initial commands layout HTML. 
-        LiveUnit.Assert.isTrue(WinJS.Utilities.hasClass(appBar.element, "win-commandlayout"), "Commands Layout AppBar should have the win-commandlayout CSS class");
+        LiveUnit.Assert.isTrue(WinJS.Utilities.hasClass(appBar.element, _Constants.commandLayoutClass), "Commands Layout AppBar should have the win-commandlayout CSS class");
         var layoutHTML = appBar.element.querySelectorAll(".win-primarygroup, .win-secondarygroup");
         LiveUnit.Assert.isTrue(layoutHTML.length === 2, "commands layout appbar should have its own HTML inside of the AppBar element.");
 
+        // Programatically add the win-reduced class to verify that switching away from commands layout removes it.
+        WinJS.Utilities.addClass(appBar.element, _Constants.reducedClass);
+
         appBar.layout = "custom";
-        LiveUnit.Assert.isFalse(WinJS.Utilities.hasClass(appBar.element, "win-commandlayout"), "Custom Layout AppBar should not have the commands layout CSS class");
+        LiveUnit.Assert.isFalse(WinJS.Utilities.hasClass(appBar.element, _Constants.commandLayoutClass), "Custom Layout AppBar should not have the commands layout CSS class");
+        LiveUnit.Assert.isFalse(WinJS.Utilities.hasClass(appBar.element, _Constants.reducedClass), "Custom Layout AppBar should not have the win-reduced CSS class");
         layoutHTML = appBar.element.querySelectorAll(".win-primarygroup, .win-secondarygroup");
         LiveUnit.Assert.isTrue(layoutHTML.length === 0, "custom layout appbar should not have commands layout HTML inside of the AppBar element.");
 
@@ -1310,19 +1314,12 @@ CorsicaTests.AppBarTests = function () {
             "</div>";
         var appBar = new WinJS.UI.AppBar(root.querySelector("#appBar"), { sticky: false });
 
-        var msg = "Default AppBar should begin completely hidden.";
+        var msg = "Default AppBar should begin minimal.";
         LiveUnit.LoggingCore.logComment("Test: " + msg);
-        verifyAppBarCompletelyHidden(appBar);
+        verifyAppBarClosedMinimal(appBar);
 
-        msg = "Changing closedDisplayMode to 'minimal' while AppBar is closed should move the AppBar into mininmal position.";
-        LiveUnit.LoggingCore.logComment("Test: " + msg);
-
-        waitForPositionChange(appBar, function () { appBar.closedDisplayMode = "minimal"; }).then(function () {
-            verifyAppBarClosedMinimal(appBar);
-
-            msg = "Changing closedDisplayMode to 'none' while AppBar is closed should hide the AppBar completely.";
-            return waitForPositionChange(appBar, function () { appBar.closedDisplayMode = "none" });
-        }).then(function () {
+        msg = "Changing closedDisplayMode to 'none' while AppBar is closed should hide the AppBar completely.";
+        waitForPositionChange(appBar, function () { appBar.closedDisplayMode = "none" }).then(function () {
             verifyAppBarCompletelyHidden(appBar);
 
             msg = "Disabling the AppBar should hide it completely.";
@@ -1412,7 +1409,7 @@ CorsicaTests.AppBarTests = function () {
 
         var root = document.getElementById("appBarDiv");
         var topBar = new WinJS.UI.AppBar(null, { placement: 'top', commands: [{ label: 'top cmd', icon: 'add' }], closedDisplayMode: 'minimal' });
-        var bottomBar = new WinJS.UI.AppBar(null, { placement: 'bottom', commands: [{ label: 'bottom cmd', icon: 'edit' }], closedDisplayMode: 'minimal', layout:'custom' })
+        var bottomBar = new WinJS.UI.AppBar(null, { placement: 'bottom', commands: [{ label: 'bottom cmd', icon: 'edit' }], closedDisplayMode: 'minimal', layout: 'custom' })
         root.appendChild(topBar.element);
         root.appendChild(bottomBar.element);
 
@@ -1436,8 +1433,8 @@ CorsicaTests.AppBarTests = function () {
 
                 // Sanity check that when we begin, all AppBars are hidden
                 verifyHidden();
-                
-                trigger();                
+
+                trigger();
                 WinJS.UI.AppBar._appBarsSynchronizationPromise.then(function () {
                     verifyShown()
 
@@ -1504,8 +1501,143 @@ CorsicaTests.AppBarTests = function () {
         then(function () { return testInvokeBehavior(actions.click(bottomBar)); }).
         then(function () { return testInvokeBehavior(actions.tap(bottomBar)); }).
         done(function () { complete(); });
-    };    
-}
+    };
+
+    function hideAllAppBars() {
+        var AppBars = document.querySelectorAll(".win-appbar");
+        AppBars = Array.prototype.map.call(AppBars, function (AppBar) { return AppBar.winControl; });
+        return WinJS.UI._Overlay._hideAllBars(AppBars);
+    };
+
+    function showAllAppBars() {
+        var AppBars = document.querySelectorAll(".win-appbar");
+        AppBars = Array.prototype.map.call(AppBars, function (AppBar) { return AppBar.winControl; });
+        return WinJS.UI._Overlay._showAllBars(AppBars);
+    }
+    this.testSingleAppBarLightDismissFocusWrapping = function (complete) {
+        var root = document.getElementById("appBarDiv");
+        var topBar = new WinJS.UI.AppBar(null, { placement: 'top', commands: [{ id: 'top1', icon: 'add' }, { id: 'top2', icon: 'edit' }, { id: 'top3', icon: 'camera' }], closedDisplayMode: 'none' });
+        var bottomBar = new WinJS.UI.AppBar(null, { placement: 'bottom', commands: [{ id: 'bot1', icon: 'add' }, { id: 'bot2', icon: 'edit' }, { id: 'bot3', icon: 'camera' }], closedDisplayMode: 'none', layout: 'custom' });
+        root.appendChild(topBar.element);
+        root.appendChild(bottomBar.element);
+
+        function performTest(appBar) {
+            return new WinJS.Promise(function (promiseComplete) {
+
+                var children = appBar.element.children,
+                    commands = appBar.element.querySelectorAll(".win-command"),
+                    firstDiv,
+                    finalDiv;
+
+                // Start out sane, hide all AppBars.
+                hideAllAppBars().then(function () {
+                    return waitForPositionChange(appBar, function () { appBar.show(); });
+                }).then(function () {
+
+                    firstDiv = children[0],
+                    finalDiv = children[children.length - 1];
+
+                    // Verify they are both reachable by tab key.
+                    LiveUnit.Assert.isTrue(firstDiv.tabIndex >= 0);
+                    LiveUnit.Assert.isTrue(finalDiv.tabIndex >= 0);
+
+                    // Verify that focusing the firstDiv wraps focus around to the last AppBarCommand in the AppBar.
+                    firstDiv.focus();
+                    return WinJS.Promise.timeout(0);
+                }).then(function () { 
+                    LiveUnit.Assert.areEqual(document.activeElement.id, commands[commands.length - 1].id);
+
+                    // Verify that focusing the firstDiv wraps focus around to the last AppBarCommand in the AppBar.
+                    finalDiv.focus();
+                    return WinJS.Promise.timeout(0);
+                }).then(function () {
+                    LiveUnit.Assert.areEqual(document.activeElement.id, commands[0].id);
+                    promiseComplete();
+                });
+            });
+        };
+
+        performTest(topBar).then(function () {
+            return performTest(bottomBar);
+        }).then(complete);
+    };
+
+    this.testLightDismissFocusWrappingBetweenAppBars = function (complete) {
+
+        // Test that focus wraps from one bar to the next, whenever more than one appbar is open and at least one of them is non sticky.
+
+        var root = document.getElementById("appBarDiv");
+        var topBar = new WinJS.UI.AppBar(null, { placement: 'top', commands: [{ id: 'top1', icon: 'add' }, { id: 'top2', icon: 'edit' }, { id: 'top3', icon: 'camera' }], closedDisplayMode: 'none', sticky: false });
+        var bottomBar = new WinJS.UI.AppBar(null, { placement: 'bottom', commands: [{ id: 'bot1', icon: 'add' }, { id: 'bot2', icon: 'edit' }, { id: 'bot3', icon: 'camera' }], sticky: false, closedDisplayMode: 'none', layout: 'custom' });
+        root.appendChild(topBar.element);
+        root.appendChild(bottomBar.element);
+
+        function runTest(bar1, bar2) {
+            return new WinJS.Promise(function (promiseComplete) {
+
+                var bar1Children = bar1.element.children,
+                    bar1Commands = bar1.element.querySelectorAll('.win-command'),
+                    bar1FirstDiv,
+                    bar1FinalDiv;
+                
+                var bar2Children = bar2.element.children,
+                    bar2Commands = bar2.element.querySelectorAll('.win-command'),
+                    bar2FirstDiv,
+                    bar2FinalDiv;
+
+                // Start out sane, show all appbars.
+                showAllAppBars().then(function () {
+
+                    bar1FirstDiv = bar1Children[0];
+                    bar1FinalDiv = bar1Children[bar1Children.length - 1];
+                    bar2FirstDiv = bar2Children[0],
+                    bar2FinalDiv = bar2Children[bar2Children.length - 1],
+
+                    // Verify they are all reachable by tab key.
+                    LiveUnit.Assert.isTrue(bar1FirstDiv.tabIndex >= 0);
+                    LiveUnit.Assert.isTrue(bar1FinalDiv.tabIndex >= 0);
+                    LiveUnit.Assert.isTrue(bar2FirstDiv.tabIndex >= 0);
+                    LiveUnit.Assert.isTrue(bar2FinalDiv.tabIndex >= 0);
+
+                    // Verify that focusing finalDiv in bar1 moves focus to the first command in bar2
+                    bar1FinalDiv.focus();
+                    return WinJS.Promise.timeout(0);
+                }).then(function () {
+                    LiveUnit.Assert.areEqual(document.activeElement.id, bar2Commands[0].id);
+
+                    // Verify that focusing firstDiv in bar2 moves focus to the last command in bar1
+                    bar2FirstDiv.focus();
+                    return WinJS.Promise.timeout(0);
+                }).then(function () {
+                    LiveUnit.Assert.areEqual(document.activeElement.id, bar1Commands[bar1Commands.length - 1].id);
+
+                    // Verify that focusing finalDiv in bar2 moves focus to the first command in bar1
+                    bar2FinalDiv.focus();
+                    return WinJS.Promise.timeout(0);
+                }).then(function () {
+                    LiveUnit.Assert.areEqual(document.activeElement.id, bar1Commands[0].id);
+
+                    // Verify that focusing firstDiv in bar1 moves focus to the last command in bar2
+                    bar1FirstDiv.focus();
+                    return WinJS.Promise.timeout(0);
+                }).then(function () {
+                    LiveUnit.Assert.areEqual(document.activeElement.id, bar2Commands[bar2Commands.length - 1].id);
+                    promiseComplete();
+                });
+            });
+        };
+
+        runTest(topBar, bottomBar).then(function () {
+            topBar.sticky = true;
+            return runTest(topBar, bottomBar);
+        }).then(function () {
+            topBar.sticky = false;
+            bottomBar.sticky = true;
+            return runTest(topBar, bottomBar);
+        }).then(complete);
+    };
+
+};
 
 // register the object as a test class by passing in the name
 LiveUnit.registerTestClass("CorsicaTests.AppBarTests");

@@ -112,7 +112,7 @@ define([
                 if (edgyHappening === "showing") {
                     _Overlay._Overlay._hideAllBars(bars, false);
                 } else if (edgyHappening === "hiding") {
-                    _showAllBars(bars, false);
+                    _Overlay._Overlay._showAllBars(bars, false);
                 }
                 edgyHappening = null;
             }
@@ -160,27 +160,17 @@ define([
                 return AppBars;
             }
 
-            function _showAllBars(bars, keyboardInvoked) {
-                var len = bars.length;
-                var allBarsAnimationPromises = new Array(len);
-                for (var i = 0; i < len; i++) {
-                    bars[i]._keyboardInvoked = keyboardInvoked;
-                    bars[i]._doNotFocus = false;
-                    bars[i]._show();
-                    allBarsAnimationPromises[i] = bars[i]._animationPromise;
-                }
-                return Promise.join(allBarsAnimationPromises);
-            }
-
             // Sets focus to the last AppBar in the provided appBars array with given placement.
             // Returns true if focus was set.  False otherwise.
             function _setFocusToPreviousAppBarHelper(startIndex, appBarPlacement, appBars) {
+                var appBar;
                 for (var i = startIndex; i >= 0; i--) {
-                    if (appBars[i].winControl
-                     && appBars[i].winControl.placement === appBarPlacement
-                     && !appBars[i].winControl.hidden
-                     && appBars[i].winControl._focusOnLastFocusableElement
-                     && appBars[i].winControl._focusOnLastFocusableElement()) {
+                    appBar = appBars[i].winControl;
+                    if (appBar
+                     && appBar.placement === appBarPlacement
+                     && !appBar.hidden
+                     && appBar._focusOnLastFocusableElement
+                     && appBar._focusOnLastFocusableElement()) {
                         return true;
                     }
                 }
@@ -229,7 +219,7 @@ define([
                     appBar = appBars[i].winControl;
                     if (appBar
                      && appBar.placement === appBarPlacement
-                     && appBar.hidden
+                     && !appBar.hidden
                      && appBar._focusOnFirstFocusableElement
                      && appBar._focusOnFirstFocusableElement()) {
                         return true;
@@ -403,7 +393,7 @@ define([
 
                 // Need to set placement before closedDisplayMode, closedDisplayMode sets our starting position, which is dependant on placement.
                 this.placement = options.placement || _Constants.appBarPlacementBottom;
-                this.closedDisplayMode = options.closedDisplayMode || closedDisplayModes.none;
+                this.closedDisplayMode = options.closedDisplayMode || closedDisplayModes.minimal;
 
                 _Control.setOptions(this, options);
 
@@ -442,10 +432,10 @@ define([
                 // Need to hide ourselves if we lose focus
                 _ElementUtilities._addEventListener(this._element, "focusout", function () { _Overlay._Overlay._hideIfAllAppBarsLostFocus(); }, false);
 
-                // Commands layout AppBar measures and caches its content synchronously in setOptions through the .commands property setter.
-                // Remove the commands layout AppBar from the layout tree at this point so we don't cause unnecessary layout costs whenever
-                // the window resizes or when CSS changes are applied to the commands layout AppBar's parent element.
-                if (this.layout === _Constants.appBarLayoutCommands) {
+
+                if (this.closedDisplayMode === closedDisplayModes.none && this.layout === _Constants.appBarLayoutCommands) {
+                    // Remove the commands layout AppBar from the layout tree at this point so we don't cause unnecessary layout costs whenever
+                    // the window resizes or when CSS changes are applied to the commands layout AppBar's parent element.
                     this._element.style.display = "none";
                 }
 
@@ -1048,6 +1038,9 @@ define([
                         // also accounting for any viewport scrolling or soft keyboard positioning.                
                         this._ensurePosition();
 
+                        this._element.style.opacity = 1;
+                        this._element.style.visibility = "visible";
+
                         this._animationPromise = (performAnimation) ? this._animatePositionChange(fromPosition, toPosition) : Promise.wrap();
                         this._animationPromise.then(
                             function () { this._afterPositionChange(toPosition, newState); }.bind(this),
@@ -1166,8 +1159,6 @@ define([
                         offsetTop = (this._placement === _Constants.appBarPlacementTop) ? -distance : distance;
 
                     // Animate
-                    this._element.style.opacity = 1;
-                    this._element.style.visibility = "visible";
                     if (endingVisiblePixelHeight > beginningVisiblePixelHeight) {
                         var fromOffset = { top: offsetTop + "px", left: "0px" };
                         return Animations.showEdgeUI(this._element, fromOffset, { mechanism: "transition" });
@@ -1592,7 +1583,7 @@ define([
                         return "hiding";
                     } else {
                         AppBar._appBarsSynchronizationPromise = AppBar._appBarsSynchronizationPromise.then(function () {
-                            return _showAllBars(bars, keyboardInvoked);
+                            return _Overlay._Overlay._showAllBars(bars, keyboardInvoked);
                         });
                         return "showing";
                     }
