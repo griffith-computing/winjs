@@ -112,7 +112,7 @@ define([
                 if (edgyHappening === "showing") {
                     _Overlay._Overlay._hideAllBars(bars, false);
                 } else if (edgyHappening === "hiding") {
-                    _showAllBars(bars, false);
+                    _Overlay._Overlay._showAllBars(bars, false);
                 }
                 edgyHappening = null;
             }
@@ -158,18 +158,6 @@ define([
                 }
 
                 return AppBars;
-            }
-
-            function _showAllBars(bars, keyboardInvoked) {
-                var len = bars.length;
-                var allBarsAnimationPromises = new Array(len);
-                for (var i = 0; i < len; i++) {
-                    bars[i]._keyboardInvoked = keyboardInvoked;
-                    bars[i]._doNotFocus = false;
-                    bars[i]._show();
-                    allBarsAnimationPromises[i] = bars[i]._animationPromise;
-                }
-                return Promise.join(allBarsAnimationPromises);
             }
 
             // Sets focus to the last AppBar in the provided appBars array with given placement.
@@ -951,7 +939,7 @@ define([
 
                     // If the current active element isn't an intrinsic part of the AppBar, 
                     // Layout might want to handle additional keys. 
-                    if (!this._invokeButton.contains(event.target)) {
+                    if (!this._invokeButton.contains(_Global.document.activeElement)) {
                         this._layout.handleKeyDown(event);
                     }
                 },
@@ -1599,7 +1587,7 @@ define([
                         return "hiding";
                     } else {
                         AppBar._appBarsSynchronizationPromise = AppBar._appBarsSynchronizationPromise.then(function () {
-                            return _showAllBars(bars, keyboardInvoked);
+                            return _Overlay._Overlay._showAllBars(bars, keyboardInvoked);
                         });
                         return "showing";
                     }
