@@ -1596,6 +1596,12 @@ CorsicaTests.AppBarTests = function () {
                     bar2FirstDiv = bar2Children[0],
                     bar2FinalDiv = bar2Children[bar2Children.length - 1],
 
+                    // Verify they are all reachable by tab key.
+                    LiveUnit.Assert.isTrue(bar1FirstDiv.tabIndex >= 0);
+                    LiveUnit.Assert.isTrue(bar1FinalDiv.tabIndex >= 0);
+                    LiveUnit.Assert.isTrue(bar2FirstDiv.tabIndex >= 0);
+                    LiveUnit.Assert.isTrue(bar2FinalDiv.tabIndex >= 0);
+
                     // Verify that focusing finalDiv in bar1 moves focus to the first command in bar2
                     bar1FinalDiv.focus();
                     return WinJS.Promise.timeout(0);
