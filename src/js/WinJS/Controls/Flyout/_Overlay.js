@@ -1400,14 +1400,12 @@ define([
                 },
 
                 _showAllBars: function _Overlay_showAllBars(bars, keyboardInvoked) {
-                    var len = bars.length;
-                    var allBarsAnimationPromises = new Array(len);
-                    for (var i = 0; i < len; i++) {
-                        bars[i]._keyboardInvoked = keyboardInvoked;
-                        bars[i]._doNotFocus = false;
-                        bars[i]._show();
-                        allBarsAnimationPromises[i] = bars[i]._animationPromise;
-                    }
+                    var allBarsAnimationPromises = bars.map(function (bar) {
+                        bar._keyboardInvoked = keyboardInvoked;
+                        bar._doNotFocus = false;
+                        bar._show();
+                        return bar._animationPromise;
+                    });
                     return Promise.join(allBarsAnimationPromises);
                 },
 
