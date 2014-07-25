@@ -1469,8 +1469,8 @@ CorsicaTests.AppBarTests = function () {
             return trigger;
         }
 
-        testInvokeBehavior(actions.click(bottomBar)).
-        then(function () { return testInvokeBehavior(actions.click(topBar)); }).
+        testInvokeBehavior(click(bottomBar)).
+        then(function () { return testInvokeBehavior(click(topBar)); }).
         done(function () { complete(); });
     };
 
