@@ -1076,7 +1076,8 @@ define([
                         }
 
                         // Clean up animation transforms.
-                        this._element.style.transform = "none";
+                        var transformProperty = _BaseUtils._browserStyleEquivalents["transform"].scriptName;
+                        this._element.style[transformProperty] = "none";
 
                         // Fire "after" event if we changed state.
                         if (newState === appbarShownState) {
