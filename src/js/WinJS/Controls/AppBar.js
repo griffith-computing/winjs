@@ -383,7 +383,7 @@ define([
                 _ElementUtilities.addClass(this._invokeButton, _Constants.invokeButtonClass);
                 this._element.appendChild(this._invokeButton);
                 var that = this;
-                this._invokeButton.addEventListener("pointerdown", function () { _Overlay._Overlay._addHideFocusClass(that._invokeButton); }, false);
+                _ElementUtilities._addEventListener(this._invokeButton, "pointerdown", function () { _Overlay._Overlay._addHideFocusClass(that._invokeButton); }, false);
                 this._invokeButton.addEventListener("click", function () { AppBar._toggleAllAppBarsState(_KeyboardBehavior._keyboardSeenLast, that); }, false);
 
                 // Run layout setter immediately. We need to know our layout in order to correctly 
