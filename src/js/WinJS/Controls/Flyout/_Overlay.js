@@ -1106,10 +1106,11 @@ define([
 
                 _createClickEatingDivTemplate: function (divClass, hideClickEatingDivFunction) {
                     var clickEatingDiv = _Global.document.createElement("section");
+                    clickEatingDiv._winHideClickEater = hideClickEatingDivFunction;
                     _ElementUtilities.addClass(clickEatingDiv, divClass);
                     _ElementUtilities._addEventListener(clickEatingDiv, "pointerup", function (event) { _Overlay._checkSameClickEatingPointerUp(event, true); }, true);
                     _ElementUtilities._addEventListener(clickEatingDiv, "pointerdown", function (event) { _Overlay._checkClickEatingPointerDown(event, true); }, true);
-                    clickEatingDiv.addEventListener("click", hideClickEatingDivFunction, true);
+                    clickEatingDiv.addEventListener("click", function(event){clickEatingDiv._winHideClickEater(event)}, true);
                     // Tell Aria that it's clickable
                     clickEatingDiv.setAttribute("role", "menuitem");
                     clickEatingDiv.setAttribute("aria-label", strings.closeOverlay);
@@ -1135,7 +1136,7 @@ define([
 
                 // All click-eaters eat "down" clicks so that we can still eat
                 // the "up" click that'll come later.
-                _checkClickEatingPointerDown: function (event, stopPropogation) {
+                _checkClickEatingPointerDown: function (event, stopPropagation) {
                     var target = event.currentTarget;
                     if (target) {
                         try {
@@ -1146,14 +1147,14 @@ define([
                         } catch (e) { }
                     }
 
-                    if (stopPropogation && !target._winRightMouse) {
+                    if (stopPropagation && !target._winRightMouse) {
                         event.stopPropagation();
                         event.preventDefault();
                     }
                 },
 
                 // Make sure that if we have an up we had an earlier down of the same kind
-                _checkSameClickEatingPointerUp: function (event, stopPropogation) {
+                _checkSameClickEatingPointerUp: function (event, stopPropagation) {
                     var result = false,
                         rightMouse = false,
                         target = event.currentTarget;
@@ -1165,16 +1166,20 @@ define([
                             result = true;
                             rightMouse = target._winRightMouse;
                             // For click-eaters, don't count right click the same because edgy will dismiss
-                            if (rightMouse && stopPropogation) {
+                            if (rightMouse && stopPropagation) {
                                 result = false;
                             }
                         }
                     } catch (e) { }
 
-
-                    if (stopPropogation && !rightMouse) {
+                    if (stopPropagation && !rightMouse) {
                         event.stopPropagation();
                         event.preventDefault();
+                        if (result && event.type === "touchend") {
+                            // preventDefault() on "touchend" will also block click. 
+                            // Call click handling function directly to achieve light dismiss.
+                            target._winHideClickEater(event);
+                        }
                     }
 
                     return result;
