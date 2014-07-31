@@ -81,6 +81,7 @@ define([
             }
 
             function _edgyMayHideFlyouts() {
+                // Flyouts and SettingsFlyouts should not light dismiss when they are the target of a right click.
                 if (!_Overlay._rightMouseMightEdgy) {
                     _Overlay._hideAllFlyouts();
                 }
@@ -1175,11 +1176,7 @@ define([
                     if (stopPropagation && !rightMouse) {
                         event.stopPropagation();
                         event.preventDefault();
-                        if (result && event.type === "touchend") {
-                            // preventDefault() on "touchend" will also block click. 
-                            // Call click handling function directly to achieve light dismiss.
-                            target._winHideClickEater(event);
-                        }
+                        target._winHideClickEater(event);
                     }
 
                     return result;
