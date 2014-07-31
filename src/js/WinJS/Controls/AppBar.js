@@ -310,10 +310,10 @@ define([
 
             var strings = {
                 get ariaLabel() { return _Resources._getWinJSString("ui/appBarAriaLabel").value; },
-                get requiresCommands() { return _Resources._getWinJSString("ui/requiresCommands").value; },
-                get cannotChangePlacementWhenVisible() { return _Resources._getWinJSString("ui/cannotChangePlacementWhenVisible").value; },
-                get badLayout() { return _Resources._getWinJSString("ui/badLayout").value; },
-                get cannotChangeLayoutWhenVisible() { return _Resources._getWinJSString("ui/cannotChangeLayoutWhenVisible").value; }
+                get requiresCommands() { return "Invalid argument: commands must not be empty"; },
+                get cannotChangePlacementWhenVisible() { return "Invalid argument: The placement property cannot be set when the AppBar is visible, call hide() first"; },
+                get badLayout() { return "Invalid argument: The layout property must be 'custom' or 'commands'"; },
+                get cannotChangeLayoutWhenVisible() { return "Invalid argument: The layout property cannot be set when the AppBar is visible, call hide() first"; }
             };
 
             var AppBar = _Base.Class.derive(_Overlay._Overlay, function AppBar_ctor(element, options) {
@@ -377,19 +377,14 @@ define([
                 }
 
                 // Add Invoke button.
-                this._invokeButton = _Global.document.createElement("DIV");
+                this._invokeButton = _Global.document.createElement("button");
                 this._invokeButton.tabIndex = 0;
                 this._invokeButton.innerHTML = "<span class='" + _Constants.ellipsisClass + "'></span>";
                 _ElementUtilities.addClass(this._invokeButton, _Constants.invokeButtonClass);
                 this._element.appendChild(this._invokeButton);
                 var that = this;
-                this._invokeButton.addEventListener("pointerdown", function () { _Overlay._Overlay._addHideFocusClass(that._invokeButton); }, false);
+                _ElementUtilities._addEventListener(this._invokeButton, "pointerdown", function () { _Overlay._Overlay._addHideFocusClass(that._invokeButton); }, false);
                 this._invokeButton.addEventListener("click", function () { AppBar._toggleAllAppBarsState(_KeyboardBehavior._keyboardSeenLast, that); }, false);
-                this._invokeButton.addEventListener("keyup", function (event) {
-                    if (event.keyCode === Key.enter || event.keyCode === Key.space) {
-                        AppBar._toggleAllAppBarsState(_KeyboardBehavior._keyboardSeenLast, that);
-                    }
-                }, true);
 
                 // Run layout setter immediately. We need to know our layout in order to correctly 
                 // position any commands that may be getting set through the constructor. 
@@ -1076,7 +1071,8 @@ define([
                         }
 
                         // Clean up animation transforms.
-                        this._element.style.transform = "none";
+                        var transformProperty = _BaseUtils._browserStyleEquivalents["transform"].scriptName;
+                        this._element.style[transformProperty] = "";
 
                         // Fire "after" event if we changed state.
                         if (newState === appbarShownState) {

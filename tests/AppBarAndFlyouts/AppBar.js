@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // <!-- saved from url=(0014)about:internet -->
 /// <reference path="ms-appx://$(TargetFramework)/js/base.js" />
-/// <reference path="ms-appx://$(TargetFramework)/js/en-us/base.strings.js" />
 /// <reference path="ms-appx://$(TargetFramework)/js/ui.js" />
 /// <reference path="ms-appx://$(TargetFramework)/js/en-us/ui.strings.js" />
 /// <reference path="ms-appx://$(TargetFramework)/css/ui-dark.css" />
@@ -96,7 +95,7 @@ CorsicaTests.AppBarTests = function () {
         }
     }
     this.testAppBarMultipleInstantiation["Description"] = "Test AppBar Duplicate Instantiation with same DOM element";
-    this.testAppBarMultipleInstantiation["LiveUnit.ExpectedException"] = { message: WinJS.Resources._getWinJSString("ui/duplicateConstruction").value }; // This is the exception that is expected
+    this.testAppBarMultipleInstantiation["LiveUnit.ExpectedException"] = { message: "Invalid argument: Controls may only be instantiated one time for each DOM element" }; // This is the exception that is expected
 
     // Test AppBar parameters
     this.testAppBarParams = function () {
@@ -160,7 +159,7 @@ CorsicaTests.AppBarTests = function () {
         LiveUnit.LoggingCore.logComment("Testing layout");
         testGoodInitOption("layout", "custom");
         testGoodInitOption("layout", "commands");
-        var badLayout = WinJS.Resources._getWinJSString("ui/badLayout").value;
+        var badLayout = "Invalid argument: The layout property must be 'custom' or 'commands'";
         testBadInitOption("layout", "fixed", "WinJS.UI.AppBar.BadLayout", badLayout);
         testBadInitOption("layout", -1, "WinJS.UI.AppBar.BadLayout", badLayout);
         testBadInitOption("layout", 12, "WinJS.UI.AppBar.BadLayout", badLayout);
@@ -270,7 +269,7 @@ CorsicaTests.AppBarTests = function () {
     }
     // This is the exception that is expected
     this.testAppBarThrowsWhenPlacementIsSetAndAppBarVisible["LiveUnit.ExpectedException"] = {
-        message: WinJS.Resources._getWinJSString("ui/cannotChangePlacementWhenVisible").value
+        message: "Invalid argument: The placement property cannot be set when the AppBar is visible, call hide() first"
     };
 
     this.testSynchronousShowHide = function (complete) {
@@ -1079,6 +1078,8 @@ CorsicaTests.AppBarTests = function () {
             LiveUnit.LoggingCore.logComment("Test: " + msg);
             failures = checkShouldBeTabStop(childrenMinusInvokeButton, false);
             LiveUnit.Assert.isFalse(failures.length, msg);
+
+            verifyHidden(appBar);
         }
 
         var verifyAppBarCompletelyHidden = function (appBar) {
@@ -1105,6 +1106,8 @@ CorsicaTests.AppBarTests = function () {
             var subTree = appBar.querySelectorAll("*");
             var failures = checkShouldBeTabStop(subTree, false);
             LiveUnit.Assert.isFalse(failures.length, msg);
+
+            verifyHidden(appBar);
         }
 
         var checkShouldBeDisplayNone = function (elements, shouldBeDisplayNone) {
@@ -1303,7 +1306,13 @@ CorsicaTests.AppBarTests = function () {
             LiveUnit.LoggingCore.logComment("Test: " + msg);
             failures = checkShouldBeDisplayNone(clickEater, false);
             LiveUnit.Assert.isFalse(failures.length, msg);
-        }
+        };
+
+        function verifyHidden(appBar) {
+            var msg = "Hidden AppBar should have cleaned up transforms applied by the hiding animation.";
+            var NameOfTransformProperty = WinJS.Utilities._browserStyleEquivalents["transform"].scriptName;
+            LiveUnit.Assert.isFalse(appBar.style[NameOfTransformProperty], msg);
+        };
 
         var root = document.getElementById("appBarDiv");
         root.innerHTML =
@@ -1460,46 +1469,17 @@ CorsicaTests.AppBarTests = function () {
             return triggerTestPromise;
         }
 
-        // Run tests for mouse clicks, taps, enter key, and space key on the AppBar invoke button.
-        var actions = {
-            enter: function (appBar) {
-                var trigger = function () {
-                    CommonUtilities.keyup(appBar._invokeButton, Key.enter);
-                };
-                trigger.sourceAppBar = appBar;
-                return trigger;
-            },
-            space: function (appBar) {
-                var trigger = function () {
-                    CommonUtilities.keyup(appBar._invokeButton, Key.space);
-                };
-                trigger.sourceAppBar = appBar;
-                return trigger;
-            },
-            click: function (appBar) {
-                var trigger = function () {
-                    CommonUtilities.click(appBar._invokeButton);
-                };
-                trigger.sourceAppBar = appBar;
-                return trigger;
-            },
-            tap: function (appBar) {
-                var trigger = function () {
-                    CommonUtilities.tap(appBar._invokeButton);
-                };
-                trigger.sourceAppBar = appBar;
-                return trigger;
-            },
+        // Simulate click on invoke button.
+        var click = function (appBar) {
+            var trigger = function () {
+                CommonUtilities.click(appBar._invokeButton);
+            };
+            trigger.sourceAppBar = appBar;
+            return trigger;
         }
 
-        testInvokeBehavior(actions.enter(topBar)).
-        then(function () { return testInvokeBehavior(actions.space(topBar)); }).
-        then(function () { return testInvokeBehavior(actions.click(topBar)); }).
-        then(function () { return testInvokeBehavior(actions.tap(topBar)); }).
-        then(function () { return testInvokeBehavior(actions.enter(bottomBar)); }).
-        then(function () { return testInvokeBehavior(actions.space(bottomBar)); }).
-        then(function () { return testInvokeBehavior(actions.click(bottomBar)); }).
-        then(function () { return testInvokeBehavior(actions.tap(bottomBar)); }).
+        testInvokeBehavior(click(bottomBar)).
+        then(function () { return testInvokeBehavior(click(topBar)); }).
         done(function () { complete(); });
     };
 
@@ -1544,7 +1524,7 @@ CorsicaTests.AppBarTests = function () {
                     // Verify that focusing the firstDiv wraps focus around to the last AppBarCommand in the AppBar.
                     firstDiv.focus();
                     return WinJS.Promise.timeout(0);
-                }).then(function () { 
+                }).then(function () {
                     LiveUnit.Assert.areEqual(document.activeElement.id, commands[commands.length - 1].id);
 
                     // Verify that focusing the firstDiv wraps focus around to the last AppBarCommand in the AppBar.
@@ -1579,7 +1559,7 @@ CorsicaTests.AppBarTests = function () {
                     bar1Commands = bar1.element.querySelectorAll('.win-command'),
                     bar1FirstDiv,
                     bar1FinalDiv;
-                
+
                 var bar2Children = bar2.element.children,
                     bar2Commands = bar2.element.querySelectorAll('.win-command'),
                     bar2FirstDiv,

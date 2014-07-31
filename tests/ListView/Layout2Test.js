@@ -1,6 +1,5 @@
 // Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 /// <reference path="ms-appx://$(TargetFramework)/js/base.js" />
-/// <reference path="ms-appx://$(TargetFramework)/js/en-us/base.strings.js" />
 /// <reference path="ms-appx://$(TargetFramework)/js/ui.js" />
 /// <reference path="ms-appx://$(TargetFramework)/js/en-us/ui.strings.js" />
 /// <reference path="ms-appx://$(TargetFramework)/css/ui-dark.css" />
@@ -463,6 +462,7 @@ var WinJSTests = WinJSTests || {};
 
                 layout.initialize(listView._getLayoutSite(), groupsEnabled);
                 layout._measuringPromise = WinJS.Promise.wrap();
+                layout._envInfo = {};
                 var sizes = {
                     viewportContentSize: 100,
                     containerWidth: 90,
@@ -551,6 +551,7 @@ var WinJSTests = WinJSTests || {};
 
                 layout.initialize(listView._getLayoutSite(), groupsEnabled);
                 layout._measuringPromise = WinJS.Promise.wrap();
+                layout._envInfo = {};
                 var sizes = {
                     viewportContentSize: 100,
                     containerWidth: 90,
@@ -867,6 +868,7 @@ var WinJSTests = WinJSTests || {};
 
             layout.initialize(listView._getLayoutSite(), false);
             layout._measuringPromise = WinJS.Promise.wrap();
+            layout._envInfo = {};
             attachGenericSizesToLayout(layout, sizes);
             layout._itemsPerBar = Math.floor(viewportSize.height / 110);
             layout.layout(listView._tree, { firstIndex: 0, lastIndex: count - 1 }, [], []).layoutComplete.then(function () {
@@ -950,6 +952,7 @@ var WinJSTests = WinJSTests || {};
 
                 layout.initialize(listView._getLayoutSite(), false);
                 layout._measuringPromise = WinJS.Promise.wrap();
+                layout._envInfo = {};
                 attachGenericSizesToLayout(layout, sizes);
                 layout._itemsPerBar = Math.floor(viewportSize.height / 10);
                 return layout.layout(listView._tree, { firstIndex: 0, lastIndex: count - 1 }, [], []).layoutComplete.then(function () {

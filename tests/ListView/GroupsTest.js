@@ -1,6 +1,5 @@
 // Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 /// <reference path="ms-appx://$(TargetFramework)/js/base.js" />
-/// <reference path="ms-appx://$(TargetFramework)/js/en-us/base.strings.js" />
 /// <reference path="ms-appx://$(TargetFramework)/js/ui.js" />
 /// <reference path="ms-appx://$(TargetFramework)/js/en-us/ui.strings.js" />
 /// <reference path="ms-appx://$(TargetFramework)/css/ui-dark.css" />
@@ -1448,7 +1447,7 @@ WinJSTests.GroupsTests = function () {
         var itemData = flavors;
         itemData.sort(function CompareForSort(item1, item2) {
             var first = groupKeys.indexOf(item1.kind), second = groupKeys.indexOf(item2.kind);
-            if (first === second) { return 0; }
+            if (first === second) { return item1.text.localeCompare(item2.text); }
             else if (first < second) { return -1; }
             else { return 1; }
         });
