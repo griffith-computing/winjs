@@ -259,7 +259,7 @@ AppBar
     }
 
     .win-appbar-invokebutton {
-        width: 40px;
+        width: 60px;
         height: 40px;
         position: absolute;
         right: 0px;
@@ -270,12 +270,12 @@ AppBar
         display: none;
 
         .win-appbar-ellipsis {
-            width: 36px;
+            width: 56px;
             height: 21px; /* 21px + 4px of border ===  the height of the closed minimal AppBar.*/
             right: 0px;
             position: absolute;
             border: solid 2px;
-            font-size: 11pt;
+            font-size: 14.5pt;
             text-align: center;
             font-family: "Segoe UI Symbol", "Symbols";
 
@@ -301,8 +301,8 @@ AppBar
 
      &.win-appbar-minimal {
         // Minimal AppBar makes room for the invokeButton.
-        padding-right: 40px;
-        width: ~"calc(100% - 40px)";
+        padding-right: 60px;
+        width: ~"calc(100% - 60px)";
 
         .win-appbar-invokebutton {
             display:block;
@@ -407,8 +407,8 @@ AppBar commands layout
     }
 
     &.win-appbar-minimal{
-        padding-right: 40px;
-        width: ~"calc(100% - 50px)"; // 100% - left & right padding.
+        padding-right: 60px;
+        width: ~"calc(100% - 70px)"; // 100% - left & right padding.
     }
 }
 
