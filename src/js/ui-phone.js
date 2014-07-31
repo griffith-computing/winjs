@@ -2,6 +2,7 @@
 /* global WinJS */
 define([
     'WinJS/VirtualizedDataSource',
+    'WinJS/Controls/IntrinsicControls',
     'WinJS/Controls/ListView',
     'WinJS/Controls/FlipView',
     'WinJS/Controls/ItemContainer',
