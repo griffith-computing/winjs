@@ -45,7 +45,7 @@ button.win-command {
     background: none;
     background-clip: border-box;
     height: auto; /* height is 88px (label) or 68px (no label) */
-    padding: 12px 0; /* bottom dependent on label/img, 2px margin */
+    padding: 8px 0; /* bottom dependent on label/img, 2px margin */
     margin: 0;
     border: 2px solid; /* reserve focus rect */
     min-width: 40px;
@@ -273,14 +273,16 @@ AppBar
             width: 56px;
             height: 21px; /* 21px + 4px of border ===  the height of the closed minimal AppBar.*/
             right: 0px;
-            position: absolute;
+            position: relative;
+            display: inline-block;
             border: solid 2px;
-            font-size: 14.5pt;
+            font-size: 19px;
             text-align: center;
             font-family: "Segoe UI Symbol", "Symbols";
 
             &::before {
                 content: "\E10C";
+                position: relative;
             }
         }
 
@@ -289,23 +291,37 @@ AppBar
         }
     }
 
-    &.win-bottom .win-appbar-invokebutton,
-    &.win-bottom .win-appbar-invokebutton .win-appbar-ellipsis {
+    &.win-bottom .win-appbar-invokebutton {
         top: 0px;
+
+        & .win-appbar-ellipsis {
+            top: 0px;
+
+            &::before {
+                top: -1px;
+            }
+        }
     }
 
-    &.win-top .win-appbar-invokebutton,
-    &.win-top .win-appbar-invokebutton .win-appbar-ellipsis {
+    &.win-top .win-appbar-invokebutton {
         bottom: 0px;
+
+        & .win-appbar-ellipsis {
+            bottom: 0px;
+
+            &::before {
+                bottom: 4px;
+            }
+        }
     }
 
-     &.win-appbar-minimal {
+    &.win-appbar-minimal {
         // Minimal AppBar makes room for the invokeButton.
         padding-right: 60px;
         width: ~"calc(100% - 60px)";
 
         .win-appbar-invokebutton {
-            display:block;
+            display: block;
         }
     }
 }
