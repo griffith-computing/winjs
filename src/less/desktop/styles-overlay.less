@@ -271,7 +271,7 @@ AppBar
 
         .win-appbar-ellipsis {
             width: 56px;
-            height: 21px; /* 21px + 4px of border ===  the height of the closed minimal AppBar.*/
+            height: 25px;
             right: 0px;
             position: absolute;
             display: inline-block;
@@ -291,14 +291,14 @@ AppBar
         }
     }
 
-    &.win-bottom .win-appbar-invokebutton {
+    &.win-bottom .win-appbar-invokebutton, &.win-bottom .win-appbar-invokebutton .win-appbar-ellipsis {
         top: 0px;
 
         & .win-appbar-ellipsis {
             top: 0px;
 
             &::before {
-                top: -1px;
+                top: -3px;
             }
         }
     }
@@ -310,7 +310,7 @@ AppBar
             bottom: 0px;
 
             &::before {
-                bottom: 4px;
+                bottom: 0px;
             }
         }
     }
