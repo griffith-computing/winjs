@@ -194,7 +194,7 @@ AppBarCommand separator types.
 hr.win-command {
     display: inline-block;
     padding: 0;
-    margin: 14px 29px 34px 30px;
+    margin: 10px 29px 34px 26px;
     width: 1px;
     height: 40px;
     border: 0;
@@ -213,7 +213,7 @@ div.win-command {
     display: inline-block;
     min-width: 0;
     min-height: 0;
-    padding: 12px 30px;
+    padding: 8px 30px;
     border: 2px solid; /* reserve focus rect */
     text-align: center;
     font-size: 9pt;
@@ -390,8 +390,8 @@ AppBar commands layout
 
 /* Narrow Separators */
 .win-reduced hr.win-command {
-    margin-bottom: 14px;
-    margin-top: 14px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .win-reduced hr.win-command {
@@ -453,27 +453,27 @@ High contrast AppBar needs a border
 
     .win-appbar.win-top button.win-command,
     .win-appbar.win-top div.win-command {
-        padding-bottom: 10px;
+        padding-bottom: 6px;
     }
 
     .win-appbar.win-bottom button.win-command,
     .win-appbar.win-bottom div.win-command {
-        padding-top: 10px;
+        padding-top: 6px;
     }
 
     .win-appbar.win-top hr.win-command {
-        margin-bottom: 32px;
+        margin-bottom: 28px;
     }
 
     .win-appbar.win-bottom hr.win-command {
-        margin-top: 12px;
+        margin-top: 8px;
     }
 
     .win-commandlayout {
         &.win-appbar-showing,
         &.win-appbar-shown,
         &.win-appbar-hiding {
-            min-height: 86px;
+            min-height: 78px;
         }
     }
 
@@ -482,16 +482,16 @@ High contrast AppBar needs a border
         &.win-appbar-showing,
         &.win-appbar-shown,
         &.win-appbar-hiding {
-            min-height: 66px;
+            min-height: 58px;
         }
     }
 
     .win-appbar.win-reduced.win-top hr.win-command {
-        margin-bottom: 12px;
+        margin-bottom: 8px;
     }
 
     .win-appbar.win-reduced.win-bottom hr.win-command {
-        margin-top: 12px;
+        margin-top: 8px;
     }
 }
 
