@@ -292,12 +292,12 @@ AppBar
     }
 
     &.win-bottom {
-        &.win-appbar-invokebutton, 
-        &.win-appbar-ellipsis {
+        .win-appbar-invokebutton, 
+        .win-appbar-ellipsis {
             top: 0px;
         }
 
-        &.win-appbar-ellipsis::before {
+        .win-appbar-ellipsis::before {
             /* Necessary vertical position of Ellipsis Glyph in bottom AppBar so that the top of the 3 ellipsis dots are drawn ~10px away from the top of the AppBar.
                This is to appear consistent with where the top of the win-commnandring element in an AppBarCommand button is drawn, also 10px away from the top of the AppBar. 
                This value is dependant on the font-size of the Ellipsis Glyph being 19px and the height of the parent element being 21px */
@@ -306,12 +306,12 @@ AppBar
     }
 
     &.win-top {
-        &.win-appbar-invokebutton, 
-        &.win-appbar-ellipsis {
+        .win-appbar-invokebutton, 
+        .win-appbar-ellipsis {
             bottom: 0px;
         }
         
-        &.win-appbar-ellipsis::before {
+        .win-appbar-ellipsis::before {
             /* Necessary to adjust vertical position of Ellipsis Glyph in top AppBar so that the botom of the 3 ellipsis dots are drawn ~10px away from the bottom of the AppBar.
                This is to appear consistent with where the bottom of the win-label in an AppBarCommand button is drawn, also 10px away from the bottom of the AppBar. 
                This value is dependant on the font-size of the Ellipsis Glyph being 19px and the height of the parent element being 21px */
