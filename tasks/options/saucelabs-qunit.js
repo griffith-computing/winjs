@@ -134,7 +134,7 @@
                 testInterval: 1000,
                 throttled: 20,
                 browsers: browsers,
-                "max-duration": 180,
+                "max-duration": 500,
                 testname: "winjs qunit tests",
                 tags: ["winjs"],
                 onTestComplete: onTestComplete
