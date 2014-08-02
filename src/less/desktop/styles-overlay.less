@@ -271,7 +271,7 @@ AppBar
 
         .win-appbar-ellipsis {
             width: 56px;
-            height: 25px;
+            height: 21px; /* 21px + 4px of border === the height of the closed minimal AppBar.*/
             right: 0px;
             position: absolute;
             display: inline-block;
@@ -298,7 +298,7 @@ AppBar
             top: 0px;
 
             &::before {
-                top: -3px;
+                top: -2px;
             }
         }
     }
@@ -310,7 +310,7 @@ AppBar
             bottom: 0px;
 
             &::before {
-                bottom: 0px;
+                bottom: 1px;
             }
         }
     }
