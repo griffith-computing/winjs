@@ -12,6 +12,7 @@
           "http://127.0.0.1:9999/bin/tests/ItemContainer/test.html?fastanimations=true&autostart=true",
           "http://127.0.0.1:9999/bin/tests/Itemsmanager/test.html?fastanimations=true&autostart=true",
           "http://127.0.0.1:9999/bin/tests/Less/test.html?autostart=true",
+          "http://127.0.0.1:9999/bin/tests/ListViewIntegration/test.html?fastanimations=true&autostart=true&testtimeout=10000",
           "http://127.0.0.1:9999/bin/tests/NavBar/test.html?fastanimations=true&autostart=true",
           "http://127.0.0.1:9999/bin/tests/Navigation/test.html?fastanimations=true&autostart=true",
           "http://127.0.0.1:9999/bin/tests/PageControl/test.html?fastanimations=true&autostart=true",
@@ -31,8 +32,7 @@
      ],
      "ie11only": [
           "http://127.0.0.1:9999/bin/tests/ListView/test.html?fastanimations=true&autostart=true&testtimeout=10000",
-          "http://127.0.0.1:9999/bin/tests/ListViewComponents/test.html?fastanimations=true&autostart=true&testtimeout=10000",
-          "http://127.0.0.1:9999/bin/tests/ListViewIntegration/test.html?fastanimations=true&autostart=true&testtimeout=10000"
+          "http://127.0.0.1:9999/bin/tests/ListViewComponents/test.html?fastanimations=true&autostart=true&testtimeout=10000"
      ],
      "notie11": [
          "http://127.0.0.1:9999/bin/tests/ListViewSubset/test.html?fastanimations=true&autostart=true&testtimeout=10000"
