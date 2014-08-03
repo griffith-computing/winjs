@@ -30,16 +30,18 @@ html:not(.win-touchevents) .win-flipview {
             width: 65px;
             height: 35px;
         }
-        html:not(.win-touchevents) .win-navbutton:hover {
-            background-color: Highlight;
-            color: HighlightText;
-        }
         .win-navbutton:active {
             background-color: ButtonText;
             color: ButtonFace;
         }
         .win-navright {
             margin-left: -65px;
+        }
+    }
+    html:not(.win-touchevents) .win-flipview {    
+        .win-navbutton:hover {
+            background-color: Highlight;
+            color: HighlightText;
         }
     }
 }
