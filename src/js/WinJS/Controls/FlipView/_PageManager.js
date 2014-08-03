@@ -82,6 +82,7 @@ define([
                 if (this._tabIndex < 0) {
                     this._tabIndex = 0;
                 }
+                panningDiv.tabIndex = -1;
                 flipperDiv.tabIndex = -1;
                 this._tabManager = new _TabContainer.TabContainer(this._panningDivContainer);
                 this._tabManager.tabIndex = this._tabIndex;
@@ -107,12 +108,7 @@ define([
                 }, false);
                 new _ElementUtilities._MutationObserver(flipperPropertyChanged).observe(this._flipperDiv, { attributes: true, attributeFilter: ["dir", "style", "tabindex"] });
                 this._cachedStyleDir = this._flipperDiv.style.direction;
-                this._panningDiv.addEventListener("activate", function () {
-                    that._hasFocus = true;
-                }, true);
-                this._panningDiv.addEventListener("deactivate", function () {
-                    that._hasFocus = false;
-                }, true);
+
                 if (this._environmentSupportsTouch) {
                     this._panningDivContainer.addEventListener(_BaseUtils._browserEventEquivalents["manipulationStateChanged"], function (event) {
                         that._manipulationState = event.currentState;
@@ -274,6 +270,10 @@ define([
                 },
 
                 scrollPosChanged: function () {
+
+                    if(this._hasFocus) {
+                        this._hadFocus = true;
+                    }
 
                     if (!this._itemsManager || !this._currentPage.element || this._isOrientationChanging) {
                         return;
@@ -481,6 +481,10 @@ define([
 
                 startAnimatedJump: function (index, cancelAnimationCallback, completionCallback) {
                     this._writeProfilerMark("WinJS.UI.FlipView:startAnimatedJump,info");
+
+                    if(this._hasFocus) {
+                        this._hadFocus = true;
+                    }
                     if (this._currentPage.element) {
                         var oldElement = this._currentPage.element;
                         var oldIndex = this._getElementIndex(oldElement);
@@ -1011,6 +1015,12 @@ define([
                 },
 
                 // Private methods
+
+                _hasFocus: {
+                    get: function() {
+                        return this._flipperDiv.contains(_Global.document.activeElement);
+                    }
+                },
 
                 _timeoutPageSelection: function () {
                     var that = this;
@@ -1745,10 +1755,6 @@ define([
                         if (that._viewportOnItemStart()) {
                             that._blockTabs = false;
                             if (that._currentPage.element) {
-                                if (that._hasFocus) {
-                                    _ElementUtilities._setActive(that._currentPage.element);
-                                    that._tabManager.childFocus = that._currentPage.element;
-                                }
                                 if (that._lastSelectedElement !== that._currentPage.element) {
                                     if (that._lastSelectedPage && that._lastSelectedPage.element && !isFlipper(that._lastSelectedPage.element)) {
                                         that._lastSelectedPage.element.setAttribute("aria-selected", false);
@@ -1764,6 +1770,11 @@ define([
                                     // - in case a FlipView navigation is triggered inside the pageselected listener (avoid reentering _itemSettledOn)
                                     Scheduler.schedule(function FlipView_dispatchPageSelectedEvent() {
                                         if (that._currentPage.element) {
+                                            if (that._hasFocus || that._hadFocus) {
+                                                that._hadFocus = false;
+                                                _ElementUtilities._setActive(that._currentPage.element);
+                                                that._tabManager.childFocus = that._currentPage.element;
+                                            }
                                             var event = _Global.document.createEvent("CustomEvent");
                                             event.initCustomEvent(_Constants.pageSelectedEvent, true, false, { source: that._flipperDiv });
                                             that._writeProfilerMark("WinJS.UI.FlipView:pageSelectedEvent,info");
