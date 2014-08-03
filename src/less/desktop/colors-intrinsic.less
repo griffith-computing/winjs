@@ -894,7 +894,7 @@
     .win-type-interactive {
         color: WindowText;
     }
-    .win-type-interactive:hover, .win-type-interactive:hover:active {
+    html:not(.win-touchevents) .win-type-interactive:hover, .win-type-interactive:hover:active {
         color: -ms-hotlight;
     }
     .win-type-interactive:-ms-keyboard-active {
@@ -951,9 +951,9 @@
         color: ButtonFace;
     }
 
-    button:hover, input[type=button]:hover, input[type=reset]:hover,
-    input::-ms-clear:hover, input::-ms-reveal:hover,
-    input[type=file]::-ms-browse:hover {
+    html:not(.win-touchevents) button:hover, html:not(.win-touchevents) input[type=button]:hover, html:not(.win-touchevents) input[type=reset]:hover,
+    html:not(.win-touchevents) input::-ms-clear:hover, html:not(.win-touchevents) input::-ms-reveal:hover,
+    html:not(.win-touchevents) input[type=file]::-ms-browse:hover {
         background-color: Highlight;
         border-color: ButtonText;
         color: HighlightText;
@@ -1014,7 +1014,7 @@
     /*
     Text input, checkbox, radio, and select high contrast colors.
     */
-    input:hover::-ms-check { /* only checkbox and radio have hover state */
+    html:not(.win-touchevents) input:hover::-ms-check { /* only checkbox and radio have hover state */
         background-color: Highlight;
         color: HighlightText;
     }
@@ -1135,7 +1135,7 @@
         background-color: GrayText;
         border-color: GrayText;
     }
-    input[type=range]:hover::-ms-thumb {
+    html:not(.win-touchevents) input[type=range]:hover::-ms-thumb {
         background-color: Highlight;
     }
 }
