@@ -120,7 +120,7 @@
     border-width: 4px;
     border-style: solid;
 }
-.win-container.win-selected:hover .win-selectionborder {
+html:not(.win-touchevents) .win-container.win-selected:hover .win-selectionborder {
     border-width: 4px;
     border-style: solid;
 }
@@ -490,7 +490,7 @@
     transition: none;
     -webkit-transition: none;
 }
-.win-listview.win-dragover .win-container:hover {
+html:not(.win-touchevents) .win-listview.win-dragover .win-container:hover {
     outline: none;
 }
 .win-listview .win-container.win-swipe, .win-listview .win-container.win-swipe .win-itembox,
