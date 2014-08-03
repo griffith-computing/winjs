@@ -13,6 +13,17 @@ define([
         return;
     }
 
+    if (!_Global.MSPointerEvent) {
+        var touchStartHandler = function() {
+            _Global.document.removeEventListener("touchstart", touchStartHandler);
+
+            // Add win-touchevents CSS class to <html> to avoid :hover styles in webkit when there is
+            // touch support.
+            _Global.document.body.parentNode.classList.add("win-touchevents");
+        };
+        _Global.document.addEventListener("touchstart", touchStartHandler);
+    }
+
     var _zoomToDuration = 167;
 
     function removeEmpties(arr) {
